@@ -1,0 +1,12 @@
+{
+    "name": "cadre/atlasorm-debugbar-bridge",
+    "description": "Library to use PHP DebugBar with Atlas ORM",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Shell",
+            "email": "andrew@andrewshell.org"
+        }
+    ]
+}
