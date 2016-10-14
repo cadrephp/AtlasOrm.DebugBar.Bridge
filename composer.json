@@ -3,6 +3,11 @@
     "description": "Library to use PHP DebugBar with Atlas ORM",
     "type": "library",
     "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Cadre\\AtlasOrmDebugBarBridge\\": "src/"
+        }
+    },
     "authors": [
         {
             "name": "Andrew Shell",
