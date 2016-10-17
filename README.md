@@ -41,3 +41,27 @@ $debugbar->addCollector(
     new Cadre\AtlasOrmDebugBarBridge\AtlasOrmCollector($atlasContainer)
 );
 ```
+
+## Multiple Connections
+
+```php
+$atlasContainer = Cadre\AtlasOrmDebugBarBridge\AtlasContainer(
+    'mysql:host=localhost;dbname=testdb',
+    'username',
+    'password'
+);
+
+$factory = new Cadre\AtlasOrmDebugBarBridge\ConnectionFactory(
+    'mysql:host=localhost;dbname=slavedb',
+    'readonly',
+    'password'
+);
+
+$atlasContainer->setReadConnection('readonly', $factory);
+
+$collector = new Cadre\AtlasOrmDebugBarBridge\AtlasOrmCollector($container);
+$collector->addConnectionFactory($factory, 'readonly');
+
+$debugbar = new DebugBar\StandardDebugBar();
+$debugbar->addCollector($collector);
+```
