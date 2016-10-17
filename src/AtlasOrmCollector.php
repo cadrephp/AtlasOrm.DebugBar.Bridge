@@ -17,4 +17,9 @@ class AtlasOrmCollector extends PDOCollector
         }
         parent::__construct($pdo, $timeCollector);
     }
+
+    public function addConnectionFactory(ConnectionFactory $factory, $name = null)
+    {
+        $factory->setCollector($this, $name);
+    }
 }
