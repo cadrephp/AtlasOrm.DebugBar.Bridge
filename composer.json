@@ -3,15 +3,27 @@
     "description": "Library to use PHP DebugBar with Atlas ORM",
     "type": "library",
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Cadre\\AtlasOrmDebugBarBridge\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Andrew Shell",
             "email": "andrew@andrewshell.org"
         }
-    ]
+    ],
+    "autoload": {
+        "psr-4": {
+            "Cadre\\AtlasOrmDebugBarBridge\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cadre\\AtlasOrmDebugBarBridge\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "atlas/orm": "0.x-dev@dev",
+        "maximebf/debugbar": "^1.13.0",
+        "phpunit/phpunit": "^5.0",
+        "phpunit/dbunit": "^2.0",
+        "squizlabs/php_codesniffer": "^2.6.2"
+    }
 }
