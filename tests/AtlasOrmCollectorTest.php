@@ -1,6 +1,4 @@
 <?php
-declare(strict_types=1);
-
 namespace Cadre\AtlasOrmDebugBarBridge;
 
 use Aura\Sql\ConnectionLocator;
@@ -33,5 +31,27 @@ class AtlasOrmCollectorTest extends TestCase
 
         $this->assertArrayHasKey('default', $collections);
         $this->assertSame($pdo, $collections['default']);
+    }
+
+    public function testCollectorWithConnectionFactory()
+    {
+        $container = new AtlasContainer('sqlite::memory:');
+        $factory = new ConnectionFactory('sqlite::memory:');
+        $container->setReadConnection('readonly', $factory);
+
+        $collector = new AtlasOrmCollector($container);
+        $collector->addConnectionFactory($factory, 'readonly');
+
+        $collections = $collector->getConnections();
+
+        $this->assertArrayHasKey('default', $collections);
+        $this->assertArrayNotHasKey('readonly', $collections);
+
+        $extended = $container->getConnectionLocator()->getRead('readonly');
+
+        $collections = $collector->getConnections();
+        $this->assertArrayHasKey('default', $collections);
+        $this->assertArrayHasKey('readonly', $collections);
+        $this->assertNotSame($collections['default'], $collections['readonly']);
     }
 }
