@@ -13,6 +13,8 @@ class ConnectionFactory
     private $options = array();
     private $attributes = array();
     private $pdo;
+    private $collector;
+    private $name;
 
     public function __construct(
         $dsn,

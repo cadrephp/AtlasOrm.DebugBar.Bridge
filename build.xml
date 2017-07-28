@@ -1,67 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="datecheckpro" default="build">
- <target name="build"
-   depends="prepare,lint,phpcs-ci,phpunit"/>
+<project name="cadre" default="build">
 
- <target name="test"
-   depends="phpunit"/>
+    <target name="build" depends="lint,phpstan,phpcs,phpunit" />
+    <target name="build-ci" depends="lint,phpstan,phpcs,phpunit-ci" />
+    <target name="test" depends="phpunit" />
+    <target name="coverage" depends="phpunit-coverage" />
 
- <target name="clean" description="Cleanup build artifacts">
-  <delete dir="${basedir}/build/api"/>
-  <delete dir="${basedir}/build/coverage"/>
-  <delete dir="${basedir}/build/logs"/>
- </target>
+    <target name="clean" description="Cleanup build artifacts">
+        <delete dir="build/coverage"/>
+    </target>
 
- <target name="prepare" depends="clean" description="Prepare for build">
-  <mkdir dir="${basedir}/build/api"/>
-  <mkdir dir="${basedir}/build/coverage"/>
-  <mkdir dir="${basedir}/build/logs"/>
- </target>
+    <target name="prepare" depends="clean" description="Prepare for build">
+        <mkdir dir="build/coverage"/>
+    </target>
 
- <target name="lint" description="Perform syntax check of sourcecode files">
-  <apply executable="php" failonerror="true">
-   <arg value="-l" />
+    <target name="lint" description="Perform syntax check of sourcecode files">
+        <phplint>
+            <fileset dir="src">
+                <include name="**/*.php" />
+            </fileset>
 
-   <fileset dir="${basedir}/src">
-    <include name="**/*.php" />
-    <modified />
-   </fileset>
+            <fileset dir="tests">
+                <include name="**/*.php" />
+            </fileset>
+        </phplint>
+    </target>
 
-   <fileset dir="${basedir}/tests">
-    <include name="**/*.php" />
-    <modified />
-   </fileset>
-  </apply>
- </target>
+    <target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer">
+        <exec executable="vendor/bin/phpcs" passthru="true" checkreturn="true">
+            <arg value="--standard=phpcs.xml" />
+            <arg path="src" />
+            <arg path="tests" />
+        </exec>
+    </target>
 
- <target name="phpcs"
-         description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
-  <exec executable="${basedir}/vendor/bin/phpcs">
-   <arg value="--standard=${basedir}/phpcs.xml" />
-   <arg path="${basedir}/src" />
-   <arg path="${basedir}/tests" />
-  </exec>
- </target>
+    <target name="phpstan" description="Statically analyze php code">
+        <exec executable="vendor/bin/phpstan" passthru="true" checkreturn="true">
+            <arg value="analyse" />
+            <arg value="--no-progress" />
+            <arg value="--level=4" />
+            <arg path="src" />
+            <arg path="tests" />
+        </exec>
+    </target>
 
- <target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
-  <exec executable="${basedir}/vendor/bin/phpcs" output="/dev/null">
-    <arg value="--report=checkstyle" />
-    <arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-    <arg value="--standard=${basedir}/phpcs.xml" />
-    <arg path="${basedir}/src" />
-    <arg path="${basedir}/tests" />
-  </exec>
- </target>
+    <target name="phpunit" description="Run all tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" passthru="true" checkreturn="true" />
+    </target>
 
- <target name="phpunit" description="Run all tests with PHPUnit">
-    <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true" />
- </target>
+    <target name="phpunit-ci" description="Run all tests with PHPUnit">
+        <exec executable="vendor/bin/phpunit" passthru="true" checkreturn="true">
+            <arg value="--coverage-text" />
+            <arg value="--colors=never" />
+        </exec>
+    </target>
 
-  <target name="phpunit-coverage" description="Run all tests and generate html coverage report">
-    <exec executable="${basedir}/vendor/bin/phpunit" failonerror="true">
-      <arg value="--coverage-html=${basedir}/build/coverage" />
-    </exec>
-  </target>
+    <target name="phpunit-coverage" depends="prepare" description="Run all tests and generate html coverage report">
+        <exec executable="vendor/bin/phpunit" passthru="true" checkreturn="true">
+            <arg value="--coverage-html=build/coverage" />
+        </exec>
+    </target>
 
 </project>

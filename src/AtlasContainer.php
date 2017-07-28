@@ -3,13 +3,14 @@ namespace Cadre\AtlasOrmDebugBarBridge;
 
 use Atlas\Orm\AtlasContainer as BaseAtlasContainer;
 use Aura\Sql\ConnectionLocator;
+use DebugBar\DataCollector\PDO\TraceablePDO;
+use PDO;
 
 class AtlasContainer extends BaseAtlasContainer
 {
     protected function setConnectionLocator(array $args)
     {
         switch (true) {
-
             case $args[0] instanceof ExtendedPdo:
                 $extendedPdo = $args[0];
                 $default = function () use ($extendedPdo) {
@@ -19,9 +20,9 @@ class AtlasContainer extends BaseAtlasContainer
                 break;
 
             case $args[0] instanceof PDO:
-                $extendedPdo = $args[0];
+                $pdo = $args[0];
                 $default = function () use ($pdo) {
-                    return new ExtendedPdo($pdo);
+                    return new ExtendedPdo(new TraceablePDO($pdo));
                 };
                 $driver = $pdo->getAttribute(ExtendedPdo::ATTR_DRIVER_NAME);
                 break;
